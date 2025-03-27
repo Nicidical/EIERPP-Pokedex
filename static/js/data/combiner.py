@@ -83,12 +83,15 @@ if __name__ == "__main__":
         tempSet2.add("Substitute")
         moveSets[pokemon["id"]] = tempSet2.union(moveSets[pokemon["id"]])
             
-    # Edge Cases for Partner Pokemon   
+    # Edge Cases for Partner/Battle Bond Pokemon   
     moveSets[1852] = moveSets[1852].union(moveSets[25]) # Pikachu
     moveSets[1854] = moveSets[1854].union(moveSets[52]) # Meowth   
     moveSets[1853] = moveSets[1853].union(moveSets[133]) # Eevee  
     moveSets[1857] = moveSets[1857].union(moveSets[884]) # Duraludon  
-    moveSets[1859] = moveSets[1859].union(moveSets[926]) # Fidough    
+    moveSets[1859] = moveSets[1859].union(moveSets[926]) # Fidough
+    moveSets[1862] = moveSets[1862].union(moveSets[655]) # Delphox 
+    moveSets[1860] = moveSets[1860].union(moveSets[652]) # Chesnaught 
+    moveSets[1687] = moveSets[1687].union(moveSets[658]) # Greninja
 
     # Standard Alphabetical
     for id, moveset in moveSets.items():
@@ -117,8 +120,10 @@ if __name__ == "__main__":
     
     alphabetizedMoveset = dict()
     for id, moveset in moveSets.items():
+        print (moveset)
         tempMoveset = list()
         for move in moveset:
+            if (move > 999): continue
             tempMoveset.append(moveList[move])
         alphabetizedMoveset[id] = tempMoveset
     
