@@ -120,10 +120,11 @@ if __name__ == "__main__":
     
     alphabetizedMoveset = dict()
     for id, moveset in moveSets.items():
-        print (moveset)
         tempMoveset = list()
         for move in moveset:
-            if (move > 999): continue
+            if (move > 999): 
+                print ("Nope")
+                continue
             tempMoveset.append(moveList[move])
         alphabetizedMoveset[id] = tempMoveset
     
