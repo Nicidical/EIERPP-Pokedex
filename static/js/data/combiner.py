@@ -29,6 +29,10 @@ if __name__ == "__main__":
         if move["name"] == "Cross Chop": move["lDesc"] = "The foe is hit with double chops. Hits twice. High crit ratio."
         moveList[move["id"]] = [move["name"], move["pwr"], move["acc"], move["prio"]]
 
+    # Changing ability descriptions
+    for ability in data5["abilities"]:
+        if ability["name"] == "Gunman": ability["desc"] = "Mega Launcher + Status moves are Mega Launcher boosted."
+
     # Getting Moves and organizing them (2.2)
     moveList2 = [""] * len(data2["moves"])
     for move in data2["moves"]:
@@ -95,6 +99,9 @@ if __name__ == "__main__":
     moveSets[1860] = moveSets[1860].union(moveSets[652]) # Chesnaught 
     moveSets[1687] = moveSets[1687].union(moveSets[658]) # Greninja
 
+    # Comment this out if you do not want to create a new dex
+    
+    """
     # Standard Alphabetical
     for id, moveset in moveSets.items():
         namedTempMoveset = list(moveset)
@@ -190,4 +197,30 @@ if __name__ == "__main__":
     with open('gameDataVBeta2.1.json', 'w', encoding='utf-8') as file:
         json.dump(data5, file, ensure_ascii=False, indent=2)
         print("Finished priority sorting in gameDataVBeta2.1.json.")
-    
+    """    
+        
+        
+    # For sending movesets to a file
+    fullMovelist = set()
+    with open('moveset.txt', 'w', encoding='utf-8') as file:
+        ids = [808,809]
+        for id, moveset in moveSets.items():
+            if id not in ids: continue
+            
+            for move in moveset:
+                fullMovelist.add(move)
+        
+        alphabeticalMoves = list(fullMovelist)
+        alphabeticalMoves.sort()
+        
+        firstMove = True
+        for move in alphabeticalMoves:
+            if firstMove: 
+                file.write(f"{move}")
+                firstMove = False
+            else: file.write(f", {move}")
+        
+        file.close()
+            
+            
+            
