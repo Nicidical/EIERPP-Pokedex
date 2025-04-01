@@ -101,7 +101,6 @@ if __name__ == "__main__":
 
     # Comment this out if you do not want to create a new dex
     
-    """
     # Standard Alphabetical
     for id, moveset in moveSets.items():
         namedTempMoveset = list(moveset)
@@ -116,7 +115,7 @@ if __name__ == "__main__":
             for move2 in moveList:
                 if (move2[0] != move): newID += 1
                 else: break
-            alphabetizedMoveset.append(newID)
+            if (newID < 1000): alphabetizedMoveset.append(newID)
         moveSets[id] = alphabetizedMoveset
 
     for pokemon in data5["species"]:
@@ -196,14 +195,13 @@ if __name__ == "__main__":
 
     with open('gameDataVBeta2.1.json', 'w', encoding='utf-8') as file:
         json.dump(data5, file, ensure_ascii=False, indent=2)
-        print("Finished priority sorting in gameDataVBeta2.1.json.")
-    """    
+        print("Finished priority sorting in gameDataVBeta2.1.json.")    
         
         
     # For sending movesets to a file
     fullMovelist = set()
     with open('moveset.txt', 'w', encoding='utf-8') as file:
-        ids = [808,809]
+        ids = [771,95,208,1572,1573,2535,2536,2537,174,39,40,302,303,2532,2533,2534,179,180,181,387,388,389,393,394,395,2507,2508,2509,850,851,170,171,374,375,376,1853,236,107,116,117,230,912,913,914,648,227,2608,2610,129,1041,610,611,612,353,354,328,329,330,151,2550,2551,2558,2605,2606,2607,808,809]
         for id, moveset in moveSets.items():
             if id not in ids: continue
             
