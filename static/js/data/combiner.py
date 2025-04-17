@@ -200,6 +200,8 @@ if __name__ == "__main__":
         
     # For sending movesets to a file
     fullMovelist = set()
+    illegalMoves = ["Absorb", "Acupressure", "Attract", "Clear Smog", "Destiny Bond", "Double Team", "Encore", "Explosion", "Final Gambit", "Guard Split", "Guard Swap", "Lunar Dance", "Haze", "Healing Wish", "Heart Swap", "Helping Hand", "Imprison", "Instruct", "Inverse Room", "Lash Out", "Magic Room", "Memento", "Minimize", "Misty Explosion", "Mud Sport", "Outburst", "Perish Song", "Power Split", "Power Swap", "Power Trip", "Psych Up", "Punishment", "Quash", "Salt Cure", "Self-Destruct", "Simple Beam", "Smokescreen", "Spectral Thief", "Spotlight", "Stored Power", "Topsy-Turvy", "Water Sport", "Wonder Room"]
+    
     with open('moveset.txt', 'w', encoding='utf-8') as file:
         ids = [771,95,208,1572,1573,2535,2536,2537,174,39,40,302,303,2532,2533,2534,179,180,181,387,388,389,393,394,395,2507,2508,2509,850,851,170,171,374,375,376,1853,236,107,116,117,230,912,913,914,648,227,2608,2610,129,1041,610,611,612,353,354,328,329,330,151,2550,2551,2558,2605,2606,2607,808,809]
         for id, moveset in moveSets.items():
@@ -209,6 +211,9 @@ if __name__ == "__main__":
                 fullMovelist.add(move)
         
         alphabeticalMoves = list(fullMovelist)
+        
+        for move in illegalMoves:
+            if move in alphabeticalMoves: alphabeticalMoves.remove()
         alphabeticalMoves.sort()
         
         firstMove = True
