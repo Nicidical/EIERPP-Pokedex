@@ -126,6 +126,26 @@ if __name__ == "__main__":
         json.dump(data5, file, ensure_ascii=False, indent=2)
         print("Finished standard sorting in gameDataV2.5.json.")
     
+    newData5 = deepcopy(data5)
+    illegalSpecies = set()
+    
+    # Running once to find all Pokemon that are evolved
+    for pokemon in data5["species"]:
+        for evo in pokemon["evolutions"]:
+            illegalSpecies.add(evo["in"])
+        bst = 0
+        for stat in pokemon["stats"]["base"]:
+            bst += stat
+        if bst > 420 or len(pokemon["evolutions"]) == 0:
+            illegalSpecies.add(pokemon["id"])
+    
+    
+    # Running a loop to only have 1st stage pokemon with a bst <= 420
+    newData5["species"] = [item for item in newData5["species"] if item["id"] not in illegalSpecies]
+    with open('gameDataV2.0.json', 'w', encoding='utf-8') as file:
+        json.dump(newData5, file, ensure_ascii=False, indent=2)
+        print("Finished LC sorting in gameDataV2.1.json.")
+    
     alphabetizedMoveset = dict()
     for id, moveset in moveSets.items():
         tempMoveset = list()
@@ -199,6 +219,7 @@ if __name__ == "__main__":
         
         
     # For sending movesets to a file
+    """
     fullMovelist = set()
     illegalMoves = ["Absorb", "Acupressure", "Attract", "Clear Smog", "Destiny Bond", "Double Team", "Encore", "Explosion", "Final Gambit", "Guard Split", "Guard Swap", "Lunar Dance", "Haze", "Healing Wish", "Heart Swap", "Helping Hand", "Imprison", "Instruct", "Inverse Room", "Lash Out", "Magic Room", "Memento", "Minimize", "Misty Explosion", "Mud Sport", "Outburst", "Perish Song", "Power Split", "Power Swap", "Power Trip", "Psych Up", "Punishment", "Quash", "Salt Cure", "Self-Destruct", "Simple Beam", "Smokescreen", "Spectral Thief", "Spotlight", "Stored Power", "Topsy-Turvy", "Water Sport", "Wonder Room"]
     
@@ -224,6 +245,7 @@ if __name__ == "__main__":
             else: file.write(f", {move}")
         
         file.close()
+    """
             
             
             
