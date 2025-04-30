@@ -142,7 +142,7 @@ if __name__ == "__main__":
     
     # Running a loop to only have 1st stage pokemon with a bst <= 420
     newData5["species"] = [item for item in newData5["species"] if item["id"] not in illegalSpecies]
-    with open('gameDataV2.0.json', 'w', encoding='utf-8') as file:
+    with open('gameDataVBeta2.0.json', 'w', encoding='utf-8') as file:
         json.dump(newData5, file, ensure_ascii=False, indent=2)
         print("Finished LC sorting in gameDataV2.1.json.")
     
