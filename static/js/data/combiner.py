@@ -144,6 +144,41 @@ if __name__ == "__main__":
     for mon in newData5["species"]: mon["evolutions"] = []
     newData5["locations"]["maps"] = []
     newData5["trainers"] = []
+    """
+    {
+      "name": "May Route 103 Treecko",
+      "tclass": 54,
+      "db": false,
+      "party": [
+        {
+          "spc": 347,
+          "abi": 0,
+          "ivs": [
+            31,
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "evs": [
+            0,
+            252,
+            0,
+            4,
+            0,
+            252
+          ],
+          "item": 194,
+          "nature": 11,
+          "moves": [
+            126,
+            17,
+            98,
+            203
+          ]
+        }
+    """
     
     with open('gameDataVBeta2.0.json', 'w', encoding='utf-8') as file:
         json.dump(newData5, file, ensure_ascii=False, indent=2)
