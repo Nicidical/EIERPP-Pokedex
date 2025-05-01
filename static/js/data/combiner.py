@@ -132,19 +132,20 @@ if __name__ == "__main__":
     # Running once to find all Pokemon that are evolved
     for pokemon in data5["species"]:
         for evo in pokemon["evolutions"]:
-            illegalSpecies.add(evo["in"])
+            illegalSpecies.add(data5["species"][evo["in"]]["id"])
         bst = 0
         for stat in pokemon["stats"]["base"]:
             bst += stat
         if bst > 420 or len(pokemon["evolutions"]) == 0:
             illegalSpecies.add(pokemon["id"])
     
-    
     # Running a loop to only have 1st stage pokemon with a bst <= 420
     newData5["species"] = [item for item in newData5["species"] if item["id"] not in illegalSpecies]
+    for mon in newData5["species"]: mon["evolutions"] = []
+    
     with open('gameDataVBeta2.0.json', 'w', encoding='utf-8') as file:
         json.dump(newData5, file, ensure_ascii=False, indent=2)
-        print("Finished LC sorting in gameDataV2.1.json.")
+        print("Finished LC sorting in gameDataVBeta2.0.json.")
     
     alphabetizedMoveset = dict()
     for id, moveset in moveSets.items():
