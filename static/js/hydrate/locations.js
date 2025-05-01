@@ -69,7 +69,7 @@ export function hydrateLocation() {
             for (const monID of mons) {
                 const specieID = monID[2]
                 if (specieID < 1) continue
-                /* if (gameData.species[specieID].locations === undefined) continue //what? */
+                if (gameData.species[specieID].locations === undefined) continue //what?
                 map.speciesSet.add(gameData.species[specieID])
                 if (!gameData.species[specieID].locations.get(mapID))
                     gameData.species[specieID].locations.set(mapID, new Set())

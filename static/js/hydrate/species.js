@@ -126,9 +126,9 @@ export function hydrateSpecies() {
             specie.typeEvosSet = new Set(specie.stats.types)
         }
         // share the eggmoves to the evolutions !TODO recursively
-        for (const evo of specie.evolutions) {
+        /* for (const evo of specie.evolutions) {
             hydrateNextEvolutionWithMoves(i, evo)
-        }
+        } */
         // list all pokemon if they are given
         for (const enc of specie.SEnc){
             if (gameData.scriptedEncoutersHowT[enc.how] === "given"){
