@@ -142,17 +142,24 @@ if __name__ == "__main__":
     # Running a loop to only have 1st stage pokemon with a bst <= 420
     newData5["species"] = [item for item in newData5["species"] if item["id"] not in illegalSpecies]
     for mon in newData5["species"]: mon["evolutions"] = []
-    newData5["locations"]["maps"] = []
+    for location in newData5["locations"]["maps"]:
+        if "land" in location: location["land"] = [2, 2, 1]
+        if "honey" in location: location["honey"] = [2, 2, 1]
+        if "water" in location: location["water"] = [2, 2, 1]
+        if "fish" in location: location["fish"] = [2, 2, 1]
+        if "hidden" in location: location["hidden"] = [2, 2, 1]
+        if "rock" in location: location["rock"] = [2, 2, 1]
+        if "given" in location: location["given"] = [2, 2, 1]
     newData5["trainers"] = []
     """
     {
-      "name": "May Route 103 Treecko",
+      "name": "Sickle",
       "tclass": 54,
       "db": false,
       "party": [
         {
-          "spc": 347,
-          "abi": 0,
+          "spc": 2,
+          "abi": 2,
           "ivs": [
             31,
             31,
@@ -172,12 +179,14 @@ if __name__ == "__main__":
           "item": 194,
           "nature": 11,
           "moves": [
-            126,
-            17,
-            98,
-            203
+            187,
+            299,
+            337,
+            9
           ]
         }
+      ]
+    }
     """
     
     with open('gameDataVBeta2.0.json', 'w', encoding='utf-8') as file:
