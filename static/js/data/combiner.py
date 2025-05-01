@@ -142,6 +142,8 @@ if __name__ == "__main__":
     # Running a loop to only have 1st stage pokemon with a bst <= 420
     newData5["species"] = [item for item in newData5["species"] if item["id"] not in illegalSpecies]
     for mon in newData5["species"]: mon["evolutions"] = []
+    newData5["locations"]["maps"] = []
+    newData5["trainers"] = []
     
     with open('gameDataVBeta2.0.json', 'w', encoding='utf-8') as file:
         json.dump(newData5, file, ensure_ascii=False, indent=2)
