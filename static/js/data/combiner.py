@@ -136,7 +136,7 @@ if __name__ == "__main__":
         bst = 0
         for stat in pokemon["stats"]["base"]:
             bst += stat
-        if bst > 420 or len(pokemon["evolutions"]) == 0:
+        if bst > 420 or len(pokemon["evolutions"]) == 0 and pokemon["id"] != -1:
             illegalSpecies.add(pokemon["id"])
     
     # Running a loop to only have 1st stage pokemon with a bst <= 420
