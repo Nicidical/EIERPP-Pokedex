@@ -5,24 +5,14 @@ def returnSortedList(toSort,moveList,index):
     toSort = sorted(toSort, key=lambda x: x[index])
 
 if __name__ == "__main__":
-    data2 = ""
-    data5 = ""
-    natdexdata = dict()
+    data = ""
 
-    # Loading both 2.2 and 2.5
-    with open('formatted2.2.txt', 'r', encoding='utf8') as file: data2 = json.load(file)
-    with open('formatted2.5.txt', 'r', encoding='utf8') as file: data5 = json.load(file)
-
-    # Getting the full list of Natdex Moves
-    with open('natdexlearnsets.txt', 'r', encoding='utf8') as file:
-        for line in file:
-            splitname = line.split(':\t')
-            splitmoves = splitname[1].replace('\n','').split(', ')
-            natdexdata[splitname[0]] = splitmoves
+    # Loading just 2.5
+    with open('formatted2.5.txt', 'r', encoding='utf8') as file: data = json.load(file)
 
     # Getting Moves and organizing them (2.5)
-    moveList = [""] * len(data5["moves"])
-    for move in data5["moves"]:
+    moveList = [""] * len(data["moves"])
+    for move in data["moves"]:
         # Removing stat ignoring flags
         if 17 in move["flags"]: move["flags"].remove(17)
         if move["name"] == "Freezy Frost": move["lDesc"] = "Attack with crystal made of cold frozen haze."
@@ -30,18 +20,10 @@ if __name__ == "__main__":
         moveList[move["id"]] = [move["name"], move["pwr"], move["acc"], move["prio"]]
 
     # Changing ability descriptions
-    for ability in data5["abilities"]:
+    for ability in data["abilities"]:
         if ability["name"] == "Gunman": ability["desc"] = "Mega Launcher + Status moves are Mega Launcher boosted."
-
-    # Getting Moves and organizing them (2.2)
-    moveList2 = [""] * len(data2["moves"])
-    for move in data2["moves"]:
-        moveList2[move["id"]] = move["name"]
-    
-    # Now that we have the natdex learnsets
         
     # Going through every mon and:
-    # Getting all moves from egg, level up, tm/hm, and tutor from both 2.2 and 2.5
     # Combining every move in a set
     # Creating a new set replacing the numbers with move names
     # Ordering it alphabetically
@@ -49,7 +31,7 @@ if __name__ == "__main__":
     # Putting everything into a massive list of tutor moves, with all other move categories blank
     moveSets = dict()
 
-    for pokemon in data5["species"]:
+    for pokemon in data["species"]:
         # print(f"{pokemon["name"]}: {pokemon["id"]}")
         tempSet = set()
         for move in pokemon["levelUpMoves"]:
@@ -62,54 +44,17 @@ if __name__ == "__main__":
         for id in tempSet:
             tempSet2.add(moveList[id][0])
         moveSets[pokemon["id"]] = tempSet2
-        
-        if pokemon["name"] in natdexdata.keys():
-            moveSets[pokemon["id"]] = set(natdexdata[pokemon["name"]]).union(moveSets[pokemon["id"]])
         """else:
             print(f"Cant find {pokemon["name"]}.")"""
 
-    for pokemon in data2["species"]:
-        tempSet = set()
-        for move in pokemon["levelUpMoves"]:
-            if (move["lv"] <= 100): tempSet.add(move["id"])
-        for move in pokemon["tutor"]:
-            tempSet.add(move)
-        for move in pokemon["TMHMMoves"]:
-            tempSet.add(move)
-        for move in pokemon["eggMoves"]:
-            tempSet.add(move)
-        
-        tempSet2 = set()
-        for id in tempSet:
-            tempSet2.add(moveList2[id])
-        # Four moves that every mon gets no matter what
-        tempSet2.add("Protect")
-        tempSet2.add("Secret Power")
-        tempSet2.add("Hidden Power")
-        tempSet2.add("Substitute")
-        moveSets[pokemon["id"]] = tempSet2.union(moveSets[pokemon["id"]])
-            
-    # Edge Cases for Partner/Battle Bond Pokemon   
-    moveSets[1852] = moveSets[1852].union(moveSets[25]) # Pikachu
-    moveSets[1854] = moveSets[1854].union(moveSets[52]) # Meowth   
-    moveSets[1853] = moveSets[1853].union(moveSets[133]) # Eevee  
-    moveSets[1857] = moveSets[1857].union(moveSets[884]) # Duraludon  
-    moveSets[1859] = moveSets[1859].union(moveSets[926]) # Fidough
-    moveSets[1862] = moveSets[1862].union(moveSets[655]) # Delphox 
-    moveSets[1860] = moveSets[1860].union(moveSets[652]) # Chesnaught 
-    moveSets[1687] = moveSets[1687].union(moveSets[658]) # Greninja
 
     # Comment this out if you do not want to create a new dex
-    """
     # Standard Alphabetical
     for id, moveset in moveSets.items():
         namedTempMoveset = list(moveset)
         namedTempMoveset.sort()
         alphabetizedMoveset = []
         for move in namedTempMoveset:
-            # Exceptions for these 2 since they were removed in 2.5
-            if (move == "Quick Stream" or
-                move == "Lighting Strike"): continue
             newID = 0
             # Wrote a for loop because the find functions were annoying me
             for move2 in moveList:
@@ -118,21 +63,21 @@ if __name__ == "__main__":
             if (newID < 1000): alphabetizedMoveset.append(newID)
         moveSets[id] = alphabetizedMoveset
 
-    for pokemon in data5["species"]:
+    for pokemon in data["species"]:
         pokemon["levelUpMoves"] = []
         pokemon["tutor"] = moveSets[pokemon["id"]]
 
     with open('gameDataV2.5.json', 'w', encoding='utf-8') as file:
-        json.dump(data5, file, ensure_ascii=False, indent=2)
+        json.dump(data, file, ensure_ascii=False, indent=2)
         print("Finished standard sorting in gameDataV2.5.json.")
     
-    newData5 = deepcopy(data5)
+    newData = deepcopy(data)
     illegalSpecies = set()
     
     # Running once to find all Pokemon that are evolved
-    for pokemon in data5["species"]:
+    for pokemon in data["species"]:
         for evo in pokemon["evolutions"]:
-            illegalSpecies.add(data5["species"][evo["in"]]["id"])
+            illegalSpecies.add(data["species"][evo["in"]]["id"])
         bst = 0
         for stat in pokemon["stats"]["base"]:
             bst += stat
@@ -140,9 +85,9 @@ if __name__ == "__main__":
             illegalSpecies.add(pokemon["id"])
     
     # Running a loop to only have 1st stage pokemon with a bst <= 420
-    newData5["species"] = [item for item in newData5["species"] if item["id"] not in illegalSpecies]
-    for mon in newData5["species"]: mon["evolutions"] = []
-    for location in newData5["locations"]["maps"]:
+    newData["species"] = [item for item in newData["species"] if item["id"] not in illegalSpecies]
+    for mon in newData["species"]: mon["evolutions"] = []
+    for location in newData["locations"]["maps"]:
         if "land" in location: location["land"] = [2, 2, 1]
         if "honey" in location: location["honey"] = [2, 2, 1]
         if "water" in location: location["water"] = [2, 2, 1]
@@ -150,11 +95,11 @@ if __name__ == "__main__":
         if "hidden" in location: location["hidden"] = [2, 2, 1]
         if "rock" in location: location["rock"] = [2, 2, 1]
         if "given" in location: location["given"] = [2, 2, 1]
-    newData5["trainers"] = []
+    newData["trainers"] = []
     {
       "name": "Sickle",
       "tclass": 54,
-      "db": false,
+      "db": False,
       "party": [
         {
           "spc": 2,
@@ -188,7 +133,7 @@ if __name__ == "__main__":
     }
     
     with open('gameDataVBeta2.0.json', 'w', encoding='utf-8') as file:
-        json.dump(newData5, file, ensure_ascii=False, indent=2)
+        json.dump(newData, file, ensure_ascii=False, indent=2)
         print("Finished LC sorting in gameDataVBeta2.0.json.")
     
     alphabetizedMoveset = dict()
@@ -216,12 +161,12 @@ if __name__ == "__main__":
             newMoveset.append(newID)
         moveSets[id] = newMoveset
     
-    for pokemon in data5["species"]:
+    for pokemon in data["species"]:
         pokemon["levelUpMoves"] = []
         pokemon["tutor"] = moveSets[pokemon["id"]]
 
     with open('gameDataV2.2.json', 'w', encoding='utf-8') as file:
-        json.dump(data5, file, ensure_ascii=False, indent=2)
+        json.dump(data, file, ensure_ascii=False, indent=2)
         print("Finished base power sorting in gameDataV2.2.json.")
     
     
@@ -235,12 +180,12 @@ if __name__ == "__main__":
             newMoveset.append(newID)
         moveSets[id] = newMoveset
     
-    for pokemon in data5["species"]:
+    for pokemon in data["species"]:
         pokemon["levelUpMoves"] = []
         pokemon["tutor"] = moveSets[pokemon["id"]]
 
     with open('gameDataV2.1.json', 'w', encoding='utf-8') as file:
-        json.dump(data5, file, ensure_ascii=False, indent=2)
+        json.dump(data, file, ensure_ascii=False, indent=2)
         print("Finished accuracy sorting in gameDataV2.1.json.")
     
     
@@ -254,15 +199,15 @@ if __name__ == "__main__":
             newMoveset.append(newID)
         moveSets[id] = newMoveset
     
-    for pokemon in data5["species"]:
+    for pokemon in data["species"]:
         pokemon["levelUpMoves"] = []
         pokemon["tutor"] = moveSets[pokemon["id"]]
 
     with open('gameDataVBeta2.1.json', 'w', encoding='utf-8') as file:
-        json.dump(data5, file, ensure_ascii=False, indent=2)
-        print("Finished priority sorting in gameDataVBeta2.1.json.")    
-    """    
-        
+        json.dump(data, file, ensure_ascii=False, indent=2)
+        print("Finished priority sorting in gameDataVBeta2.1.json.")       
+
+    """
     fullMovelist = set()
     illegalMoves = ["Absorb", "Acupressure", "Attract", "Clear Smog", "Destiny Bond", "Double Team", "Encore", "Explosion", "Final Gambit", "Guard Split", "Guard Swap", "Lunar Dance", "Haze", "Healing Wish", "Heart Swap", "Helping Hand", "Imprison", "Inverse Room", "Lash Out", "Magic Room", "Memento", "Minimize", "Misty Explosion", "Mud Sport", "Outburst", "Perish Song", "Power Split", "Power Swap", "Power Trip", "Psych Up", "Punishment", "Quash", "Salt Cure", "Self-Destruct", "Simple Beam", "Smokescreen", "Spectral Thief", "Spotlight", "Stored Power", "Topsy-Turvy", "Water Sport", "Wonder Room"]
     
@@ -288,6 +233,7 @@ if __name__ == "__main__":
             else: file.write(f", {move}")
         
         file.close()
+    """ 
             
             
             
