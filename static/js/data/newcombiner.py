@@ -30,6 +30,8 @@ if __name__ == "__main__":
     # Replacing the move names with numbers once again
     # Putting everything into a massive list of tutor moves, with all other move categories blank
     moveSets = dict()
+    silvallyTutor = set()
+
 
     for pokemon in data["species"]:
         # print(f"{pokemon["name"]}: {pokemon["id"]}")
@@ -38,15 +40,34 @@ if __name__ == "__main__":
             if (move["lv"] <= 100): tempSet.add(move["id"])
             else: print(f"{pokemon['name']} can't learn {move['id']}.")
         for move in pokemon["tutor"]:
+            if (pokemon["name"] == "Silvally"): silvallyTutor.add(move)
             tempSet.add(move)
         
         tempSet2 = set()
+        if ("Silvally " in pokemon["name"]): tempSet = tempSet.union(silvallyTutor)
         for id in tempSet:
             tempSet2.add(moveList[id][0])
+        tempSet2.add("Protect")
+        tempSet2.add("Secret Power")
+        tempSet2.add("Hidden Power")
+        tempSet2.add("Substitute")
         moveSets[pokemon["id"]] = tempSet2
-        """else:
-            print(f"Cant find {pokemon["name"]}.")"""
 
+    # Edge Cases for Partner/Battle Bond/Alternate Form Pokemon   
+    moveSets[1852] = moveSets[1852].union(moveSets[25]) # Pikachu
+    moveSets[1854] = moveSets[1854].union(moveSets[52]) # Meowth   
+    moveSets[1853] = moveSets[1853].union(moveSets[133]) # Eevee  
+    moveSets[1857] = moveSets[1857].union(moveSets[884]) # Duraludon  
+    moveSets[1859] = moveSets[1859].union(moveSets[926]) # Fidough
+    moveSets[1862] = moveSets[1862].union(moveSets[655]) # Delphox 
+    moveSets[1860] = moveSets[1860].union(moveSets[652]) # Chesnaught 
+    moveSets[1687] = moveSets[1687].union(moveSets[658]) # Greninja
+    moveSets[1678] = moveSets[1678].union(moveSets[645]) # Landorus-Therian
+    moveSets[1677] = moveSets[1677].union(moveSets[642]) # Thundurus-Therian
+    moveSets[1676] = moveSets[1676].union(moveSets[641]) # Tornadus-Therian
+    moveSets[1844] = moveSets[1844].union(moveSets[905]) # Enamorus-Therian
+    moveSets[1649] = moveSets[1649].union(moveSets[492]) # Shaymin-Sky
+    moveSets[1681] = moveSets[1681].union(moveSets[647]) # Keldeo-Resolute
 
     # Comment this out if you do not want to create a new dex
     # Standard Alphabetical
