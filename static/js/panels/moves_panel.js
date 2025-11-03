@@ -85,7 +85,7 @@ const flagMap = {
     "Speed Down Hit": "May down Speed",
     "Attack Down Hit 2": "May down Attack Twofold",
     "Defense Down Hit 2": "May down Defense Twofold",
-    "Special Attack Down Hit 2": "May down Special Attack Twofold",
+    "Special Attack Down Hit 2": "May down SpeciReduxal Attack Twofold",
     "Special Defense Down Hit 2": "May down Special Defense Twofold",
     "Speed Down Hit 2": "May down Speed Twofold",
     "Always Crit": "Always crit",
@@ -128,7 +128,12 @@ function setTarget(targetID) {
         "ALL_BATTLERS": [1, 1, 1, 1, 1, 1],
         "OPPONENTS_FIELD": [1, 1, 1, 0, 0, 0],
         "ALLY": [0, 0, 0, 1, 0, 1],
+        "USER_OR_ALLY": [0, 0, 0, 1, 1, 1]
     }[target]
+    if (!colorMap){
+        console.warn('a new target has been added, please update this code')
+        return
+    }
     const colorCode = ["unset", "#f4072a", "#c74fef"]
     for (const i in targetMap) {
         const nodeTarget = $("#" + targetMap[i])
@@ -319,6 +324,28 @@ export const queryMapMoves = {
     },
     ">=acc": (queryData, move) => {
         return  move.acc && move.acc >= queryData
+    },
+    "target": (queryData, move) => {
+        const target = gameData.targetT[move.target].toLowerCase()
+        if (AisInB(queryData, target)){
+            return target
+        }
+        return false
+    },
+    "power": (queryData, move) => {
+        return move.pwr && queryData == move.pwr
+    },
+    "<power": (queryData, move) => {
+        return  move.pwr && move.pwr < queryData
+    },
+    "<=power": (queryData, move) => {
+        return  move.pwr && move.pwr <= queryData 
+    },
+    ">power": (queryData, move) => {
+        return  move.pwr && move.pwr > queryData
+    },
+    ">=power": (queryData, move) => {
+        return  move.pwr && move.pwr >= queryData
     },
 }
 export function updateMoves(searchQuery) {

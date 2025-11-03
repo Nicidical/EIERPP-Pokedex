@@ -1,6 +1,7 @@
 # project related
 out/*
 !out/.gitkeep
+!out/gameDataVVanilla.json
 target/
 debug.txt
 nextdex_config.json
@@ -12,3 +13,4 @@ devDexServer/eliteredux
 node_modules/
 package-lock.json
 .vscode/launch.json
+src/gen/

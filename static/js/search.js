@@ -57,6 +57,8 @@ export const search = {
         "prio",
         "acc",
         "specie",
+        "target",
+        "power",
         "map",
         "region",
     ],

@@ -134,12 +134,18 @@ export interface CompactTrainerRematch {
 export interface CompactBattleItems {
     name: string,
     NAME: string,
+    id: number,
     //could add it? desc: string,
 }
 
+export interface CompactAbility {
+    name: string,
+    desc: string,
+    id: number
+}
 
 export interface CompactGameData {
-    abilities: Ability[],
+    abilities: CompactAbility[],
     moves: compactMove[],
     species: CompactSpecie[],
     locations: CompactLocations,
@@ -197,14 +203,18 @@ export function compactify(gameData: GameData): CompactGameData {
     const abiT: string[] = []
     gameData.abilities.forEach((val, key) => {
         abiT.push(key)
-        compacted.abilities.push(val)
+        compacted.abilities.push({
+            ...val,
+            id: gameData.abilitiesInternalID.get(key) || 0
+        })
     })
     const itemT: string[] = []
     gameData.battleItems.forEach((val, key) => {
         itemT.push(key)
         compacted.items.push({
             name: val.name,
-            NAME: key
+            NAME: key,
+            id: gameData.battleItemsInternalID.get(key) || 0,
         })
     })
     const movesT: string[] = []

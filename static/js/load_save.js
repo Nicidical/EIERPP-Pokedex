@@ -44,9 +44,9 @@ function readNbytes(bof, nBytes, bytes){
     return (resBytes >>> 0)
 }
 
-function readTeamSize(teamOffset, bytes){
-    var oft = teamOffset + 564;
-    var sizeTeam = readNbytes(oft,4,bytes);
+function readTeamSize(ofsSector, bytes){
+    let oft = ofsSector + 564;
+    let sizeTeam = readNbytes(oft,4,bytes);
     return sizeTeam; 
 }
 
@@ -86,7 +86,7 @@ function getFooterData(startOffset, endOffset, bytes) {
     for (var ofs = startOffset; ofs < endOffset; ofs += SIZE_SECTOR){
         var off = ofs + 4084 //offset footer
         var sID = readNbytes(off,2,bytes)//Sector ID
-        if (sID == 1){
+        if (sID == 2){
             TI = ofs
         } else if (sID >= 5){
             PC[sID - 5] = ofs
@@ -104,6 +104,70 @@ function getFooterData(startOffset, endOffset, bytes) {
         PC: PC,
         GS: GS,
     }
+}
+function readBit(num, startPos, numBits) {
+    // Create a mask to extract the N bits
+    const mask = (1 << numBits) - 1;
+    
+    // Extract the N bits from the specified position
+    const extractedBits = (num >> startPos) & mask;
+
+    return extractedBits;
+}
+
+
+function readPokemonBox(start, bytes){
+    const mon = {
+        moves: [],
+        pp: [],
+    }
+    mon.personality = readNbytes(start, 4 ,bytes)
+    mon.otId = readNbytes(start + 4, 4 ,bytes)
+    
+    const word5 = readNbytes(start + 8, 4, bytes)
+    mon.moves[0] = readBit(word5, 0, 11)
+    mon.experience = readBit(word5, 11, 21)
+    
+    const word6 = readNbytes(start + 12, 4, bytes)
+    mon.moves[1] = readBit(word6, 0, 11)
+    mon.moves[2] = readBit(word6, 11, 11)
+    mon.friendship = readBit(word6, 22, 8)
+    mon.isEventMon = readBit(word6, 30, 1)
+    mon.isAlpha = readBit(word6, 31, 1)
+
+    const word7 = readNbytes(start + 16, 4, bytes)
+    mon.species = readBit(word7, 0, 16)
+    mon.moves[3] = readBit(word7, 16, 11)
+    mon.hptype = readBit(word7, 27, 5)
+
+    const word8 = readNbytes(start + 20, 4, bytes)
+    mon.heldItem =  readBit(word8, 0, 10)
+    mon.nature = readBit(word8, 10, 5)
+    mon.isEgg = readBit(word8, 15, 1)
+    mon.language = readBit(word8, 16, 3)
+    mon.metLevel = readBit(word8, 19, 7)
+    mon.isShiny = readBit(word8, 26, 2)
+    mon.maxShiny = readBit(word8, 28, 2)
+    mon.ability = readBit(word8, 30, 2)
+
+    mon.hpEV = readNbytes(start + 24, 1, bytes)
+    mon.attackEV = readNbytes(start + 25, 1, bytes)
+    mon.defenseEV = readNbytes(start + 26, 1, bytes)
+    mon.speedEV = readNbytes(start + 27, 1, bytes)
+    mon.spAttackEV = readNbytes(start + 28, 1, bytes)
+    mon.spDefenseEV = readNbytes(start + 29, 1, bytes)
+
+    mon.metLocation = readNbytes(start + 30, 1, bytes)
+    //mon.OTName = bytes.slice(start + 31, start + 38)
+    //mon.nick = bytes.slice(start + 39, start + 51)
+    const endBit =  readNbytes(start + 51, 1, bytes)
+    mon.pokeball = readBit(endBit, 0, 5)
+    mon.speedDown = readBit(endBit, 6, 1)
+    mon.otGender = readBit(endBit, 7, 1)
+    mon.isDisabled = readBit(endBit, 8, 1)
+
+    mon.markings = readNbytes(start + 52, 1, bytes)
+    return mon
 }
 
 function readSubStructure(OTID, personV, start, bytes){
@@ -234,7 +298,8 @@ function readMonBox(start, bytes){
     //var checksum = readNbytes(start + 28, 2, bytes);
     //var wtf = readNbytes(start + 30, 2, bytes);
     //var data = readNbytes(start + 32, 48, bytes);
-    var mon = readSubStructure(otId, personality, start,bytes);
+    //var mon = readSubStructure(otId, personality, start,bytes);
+    const mon = readPokemonBox(start, bytes)
     mon.personality = personality;
     mon.otId = otId;
     //Box trick
@@ -243,30 +308,26 @@ function readMonBox(start, bytes){
 }
 //100 bytes
 function readMonParty(start, bytes){
-    var personality = readNbytes(start, 4, bytes);
-    var otId = readNbytes(start + 4, 4, bytes);
-    //var nickName = readNbytes(start + 8, 10, bytes);
-    //var lang = readNbytes(start + 18, 1, bytes);
-    //var eggName = readNbytes(start + 19, 1, bytes);
-    //var OTname = readNbytes(start + 20, 7, bytes);
-    //var markings = readNbytes(start + 27, 1, bytes);
-    //var checksum = readNbytes(start + 28, 2, bytes);
-    //var wtf = readNbytes(start + 30, 2, bytes);
-    //var data = readNbytes(start + 32, 48, bytes);
-    var mon = readSubStructure(otId, personality, start,bytes);
-    mon.personality = personality;
-    mon.otId = otId;
-    //var status = readNbytes(start + 80, 4, bytes);
-    mon.level = readNbytes(start + 84, 1, bytes);
-    //var pkrs = readNbytes(start + 85, 1, bytes);
-    mon.liveStat = {}
-    mon.liveStat.currentHP = readNbytes(start + 86, 2, bytes);
-    mon.liveStat.totalHP = readNbytes(start + 88, 2, bytes);
-    mon.liveStat.atk = readNbytes(start + 90, 2, bytes);
-    mon.liveStat.def = readNbytes(start + 92, 2, bytes);
-    mon.liveStat.spe = readNbytes(start + 94, 2, bytes);
-    mon.liveStat.spa = readNbytes(start + 96, 2, bytes);
-    mon.liveStat.spd = readNbytes(start + 98, 2, bytes);
+    const mon = readPokemonBox(start, bytes)
+    mon.pp = [
+        readNbytes(start + 53, 1, bytes),
+        readNbytes(start + 54, 1, bytes),
+        readNbytes(start + 55, 1, bytes),
+        readNbytes(start + 56, 1, bytes)
+    ]
+
+    mon.status = readNbytes(start + 57, 4, bytes);
+    mon.level = readNbytes(start + 61, 1, bytes);
+    mon.mail = readNbytes(start + 62, 1, bytes);
+    mon.liveStat = {
+        currentHP: readNbytes(start + 64, 2, bytes),
+        totalHP: readNbytes(start + 66, 2, bytes),
+        atk : readNbytes(start + 68, 2, bytes),
+        def : readNbytes(start + 70, 2, bytes),
+        spe : readNbytes(start + 72, 2, bytes),
+        spa : readNbytes(start + 74, 2, bytes),
+        spd : readNbytes(start + 76, 2, bytes)
+    }
     return mon
 }
 function slowCurve(n){
@@ -359,11 +420,18 @@ export function getGEN3HP(mon) {
 function createGEN3mon(mon){
     var poke = {};
     poke.person = mon.personality;
-    poke.item = 0; //lazy but i could parse that eventually
+    const itemsLen = gameData.items.length
+    for (let i = 0; i < itemsLen; i++){
+        const item = gameData.items[i]
+        if (mon.heldItem == item.id){
+            poke.item = i
+            break
+        }
+    }
     const speciesLen = gameData.species.length
     for (let i =0; i < speciesLen; i++){
         const specie = gameData.species[i]
-        if (mon.species === specie.dex.id) {
+        if (mon.species === specie.id) {
             poke.species = i
             break
         }
@@ -377,11 +445,11 @@ function createGEN3mon(mon){
             getRandomAbi(mon, pokedex[poke.species].innates[2]),
         ]
     } else {*/
-        poke.ability = getGEN3Ability(mon);
+        //poke.ability = getGEN3Ability(mon);
     //}
-    
+    poke.ability = mon.ability
     poke.level = mon.level;
-    poke.nature = getGEN3Nature(mon);
+    poke.nature = gameData.natureT[mon.nature]//getGEN3Nature(mon);
     poke.ivs = {
         hp: mon.hpIV,
         at: mon.attackIV,
@@ -398,10 +466,15 @@ function createGEN3mon(mon){
         sd: mon.spDefenseEV,
         sp: mon.speedEV
     };
-    poke.hPWR = getGEN3HP(mon)
+    poke.hPWR = mon.hptype//getGEN3HP(mon)
     poke.moves = [];
     for (var i=0; i<4; i++) {
-        var move = gameData.moves[mon.moves[i]]
+        const moveID = mon.moves[i]
+        var move = gameData.moves[moveID]
+        if (!move){
+            console.warn(`unknown move id ${moveID}`)
+            continue
+        }
         if (move.id === mon.moves[i]){
             poke.moves[i] = mon.moves[i]
         } else {
@@ -431,6 +504,33 @@ function createGEN3mon(mon){
     return poke
 }
 
+/**
+ * THIS IS MY BRUTE FORCE TECHNIQUE TO FIND the RIGHT SECTOR OR RATHER SMALL CHANGES
+ * DO NO FORGET THE SAVE FILES NEEDS TO BE REROLLED TO HAVE IDENTICALLY SID POSITIONS
+ * TO DO THAT, YOU MUST SAVE MULTIPLE TIMES 14 OR SO
+ * if (!window.xxx){
+            window.xxx = {}
+            const len = bytes.length
+            for(let i = 0; i < len; i++){
+                const val = bytes[i]
+                if (val == 6){
+                    window.xxx[i] = 1
+                }
+            } // 49347
+        } else {
+            const len = bytes.length
+            for(let i = 0; i < len; i++){
+                const val = bytes[i]
+                if (window.xxx[i] && val == 5){
+                    console.log("aaaa", i)
+                    break
+                }
+            }
+            window.xxx = undefined
+        }
+ */
+
+
 function parseFile(file){
     if (!file) return
     if (file.target) file = file.target.files[0]
@@ -446,9 +546,11 @@ function parseFile(file){
         var DATA_FIELD = 3968;
         var COUNT_MAIN = 14; 
         var SIZE_MAIN = COUNT_MAIN * SIZE_SECTOR;
-        var GameA = getFooterData(0, 57344, bytes);
+        /*var GameA = getFooterData(0, 57344, bytes);
         var GameB = getFooterData(57344, 114688, bytes)
         var RSave = GameA.SI > GameB.SI ? GameA : GameB; //recent Save
+        */
+        const RSave = getFooterData(0, 114688, bytes)
         //GS[0] = SaveBlock2
         //var gameSets = RSave.GS[0] + 0x97
         //gameSets = readNbytes(gameSets, 2, bytes)
@@ -473,15 +575,21 @@ function parseFile(file){
             var teamOffset = RSave.TI + 568;
             var teamList = []
             for (var i = 0; i< teamsize; i++){
-                var mon = readMonParty(teamOffset + (i * 100), bytes)
-                mon = createGEN3mon(mon)
+                var mon = readMonParty(teamOffset + (i * 76), bytes)
+                try{
+                    mon = createGEN3mon(mon)
+                } catch(e){
+                    console.warn(`Failed to created this pokemon from savefile, reason: ${e}`)
+                    continue
+                }
+                
                 const evs = mon.evs
                 teamList.push({
                     spc: mon.species,
                     isShiny: false,
                     abi: mon.ability,
                     moves: mon.moves,
-                    item: undefined,
+                    item: mon.item,
                     ivs: [31, 31, 31, 31, 31, mon.zeroSpe ? 0 : 31],
                     evs: [evs.hp, evs.at, evs.df, evs.sa, evs.sd, evs.sp],
                     nature: gameData.natureT.indexOf(mon.nature)
