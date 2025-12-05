@@ -17,6 +17,7 @@ if __name__ == "__main__":
         if 17 in move["flags"]: move["flags"].remove(17)
         if move["name"] == "Freezy Frost": move["lDesc"] = "Attack with crystal made of cold frozen haze."
         if move["name"] == "Cross Chop": move["lDesc"] = "The foe is hit with double chops. Hits twice. High crit ratio."
+        if move["name"] == "Aerial Ace": move["lDesc"] = "An extremely fast attack. It can't be evaded. Always crits. Keen Edge boost."
         moveList[move["id"]] = [move["name"], move["pwr"], move["acc"], move["prio"]]
 
     # Changing ability descriptions

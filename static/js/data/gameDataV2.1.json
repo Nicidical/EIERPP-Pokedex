@@ -11352,7 +11352,7 @@
       ],
       "arg": "",
       "desc": "An extremely speedy and unavoidable attack.",
-      "lDesc": "An extremely fast attack. It can't be evaded. Keen Edge boost.",
+      "lDesc": "An extremely fast attack. It can't be evaded. Always crits. Keen Edge boost.",
       "id": 332
     },
     {
