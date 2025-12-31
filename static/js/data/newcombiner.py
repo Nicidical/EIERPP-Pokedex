@@ -34,6 +34,25 @@ if __name__ == "__main__":
     convergenceMoveSets = dict()
     silvallyTutor = set()
 
+    bannedSpecies = ["Arceus", 
+                     "Arceus Fighting", 
+                     "Arceus Flying", 
+                     "Arceus Poison", 
+                     "Arceus Ground", 
+                     "Arceus Rock", 
+                     "Arceus Bug", 
+                     "Arceus Ghost", 
+                     "Arceus Steel", 
+                     "Arceus Fire", 
+                     "Arceus Water", 
+                     "Arceus Grass", 
+                     "Arceus Electric", 
+                     "Arceus Psychic", 
+                     "Arceus Ice", 
+                     "Arceus Dragon", 
+                     "Arceus Dark", 
+                     "Arceus Fairy"]
+
     # Creating all possible type combinations for convergenceMoveSets
     for i in range(21):
         for j in range(i,21):
@@ -60,9 +79,10 @@ if __name__ == "__main__":
         tempSet2.add("Substitute")
         moveSets[pokemon["id"]] = tempSet2
 
-        type1 = pokemon["stats"]["types"][0]
-        type2 = pokemon["stats"]["types"][1]
-        convergenceMoveSets[(min(type1, type2),max(type1,type2))] = convergenceMoveSets[(min(type1, type2),max(type1,type2))].union(tempSet2)
+        if pokemon["name"] not in bannedSpecies:
+            type1 = pokemon["stats"]["types"][0]
+            type2 = pokemon["stats"]["types"][1]
+            convergenceMoveSets[(min(type1, type2),max(type1,type2))] = convergenceMoveSets[(min(type1, type2),max(type1,type2))].union(tempSet2)
 
     # Edge Cases for Partner/Battle Bond/Alternate Form Pokemon   
     moveSets[1852] = moveSets[1852].union(moveSets[25]) # Pikachu
