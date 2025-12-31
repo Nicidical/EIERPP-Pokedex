@@ -51,7 +51,9 @@ if __name__ == "__main__":
                      "Arceus Ice", 
                      "Arceus Dragon", 
                      "Arceus Dark", 
-                     "Arceus Fairy"]
+                     "Arceus Fairy",
+                     "Mew",
+                     "Smeargle"]
 
     # Creating all possible type combinations for convergenceMoveSets
     for i in range(21):
