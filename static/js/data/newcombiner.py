@@ -35,25 +35,52 @@ if __name__ == "__main__":
     silvallyTutor = set()
 
     bannedSpecies = ["Arceus", 
-                     "Arceus Fighting", 
-                     "Arceus Flying", 
-                     "Arceus Poison", 
-                     "Arceus Ground", 
-                     "Arceus Rock", 
-                     "Arceus Bug", 
-                     "Arceus Ghost", 
-                     "Arceus Steel", 
-                     "Arceus Fire", 
-                     "Arceus Water", 
-                     "Arceus Grass", 
-                     "Arceus Electric", 
-                     "Arceus Psychic", 
-                     "Arceus Ice", 
-                     "Arceus Dragon", 
-                     "Arceus Dark", 
-                     "Arceus Fairy",
+                     "Burmy Eterna",
+                     "Calyrex Cloud Rider",
+                     "Calyrex Ice Rider",
+                     "Calyrex Shadow Rider",
+                     "Cascoon Primal",
+                     "Chien Pao Mega",
+                     "Dawn Wings",
+                     "Dialga",
+                     "Dusk Mane",
+                     "Espeon Primal",
+                     "Eternatus",
+                     "Kartana Fallen",
+                     "Giratina",
+                     "Groudon",
+                     "Ho-Oh"
+                     "Hoopa",
+                     "Kecleong",
+                     "Koraidon",
+                     "Kyogre",
+                     "Kyurem",
+                     "Lugia",
+                     "Lunala",
+                     "Melmetal Mega",
                      "Mew",
-                     "Smeargle"]
+                     "Mimikyu Apex",
+                     "Mimikyu Primal",
+                     "Miraidon",
+                     "Necrozma Ultra",
+                     "Palkia",
+                     "Rayquaza",
+                     "Regigigas",
+                     "Reshiram",
+                     "Smeargle",
+                     "Solgaleo",
+                     "Solrock System",
+                     "Terapagos",
+                     "Urshifu Mega",
+                     "Urshifu Rapid Strike Style Mega",
+                     "Wigglytuff Primal",
+                     "Victini Primal",
+                     "Xerneas"
+                     "Yveltal",
+                     "Zacian",
+                     "Zamazenta",
+                     "Zekrom",
+                     "Zygarde Complete"]
 
     # Creating all possible type combinations for convergenceMoveSets
     for i in range(21):
@@ -81,7 +108,12 @@ if __name__ == "__main__":
         tempSet2.add("Substitute")
         moveSets[pokemon["id"]] = tempSet2
 
-        if pokemon["name"] not in bannedSpecies:
+        validConverge = True
+        for mon in bannedSpecies:
+            if mon in pokemon["name"]:
+                validConverge = False
+
+        if validConverge:
             type1 = pokemon["stats"]["types"][0]
             type2 = pokemon["stats"]["types"][1]
             convergenceMoveSets[(min(type1, type2),max(type1,type2))] = convergenceMoveSets[(min(type1, type2),max(type1,type2))].union(tempSet2)
