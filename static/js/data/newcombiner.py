@@ -31,7 +31,13 @@ if __name__ == "__main__":
     # Replacing the move names with numbers once again
     # Putting everything into a massive list of tutor moves, with all other move categories blank
     moveSets = dict()
+    convergenceMoveSets = dict()
     silvallyTutor = set()
+
+    # Creating all possible type combinations for convergenceMoveSets
+    for i in range(21):
+        for j in range(i,21):
+            convergenceMoveSets[(i,j)] = set()
 
 
     for pokemon in data["species"]:
@@ -53,6 +59,10 @@ if __name__ == "__main__":
         tempSet2.add("Hidden Power")
         tempSet2.add("Substitute")
         moveSets[pokemon["id"]] = tempSet2
+
+        type1 = pokemon["stats"]["types"][0]
+        type2 = pokemon["stats"]["types"][1]
+        convergenceMoveSets[(min(type1, type2),max(type1,type2))] = convergenceMoveSets[(min(type1, type2),max(type1,type2))].union(tempSet2)
 
     # Edge Cases for Partner/Battle Bond/Alternate Form Pokemon   
     moveSets[1852] = moveSets[1852].union(moveSets[25]) # Pikachu
@@ -92,6 +102,31 @@ if __name__ == "__main__":
     with open('gameDataV2.5.json', 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=2)
         print("Finished standard sorting in gameDataV2.5.json.")
+    
+    # Standard Alphabetical (Convergence)
+    for id, moveset in convergenceMoveSets.items():
+        namedTempMoveset = list(moveset)
+        namedTempMoveset.sort()
+        alphabetizedMoveset = []
+        for move in namedTempMoveset:
+            newID = 0
+            # Wrote a for loop because the find functions were annoying me
+            for move2 in moveList:
+                if (move2[0] != move): newID += 1
+                else: break
+            if (newID < 1000): alphabetizedMoveset.append(newID)
+        convergenceMoveSets[id] = alphabetizedMoveset
+
+    for pokemon in data["species"]:
+        pokemon["levelUpMoves"] = []
+
+        type1 = pokemon["stats"]["types"][0]
+        type2 = pokemon["stats"]["types"][1]
+        pokemon["tutor"] = convergenceMoveSets[(min(type1, type2),max(type1,type2))]
+
+    with open('gameDataV1.6.1.json', 'w', encoding='utf-8') as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
+        print("Finished standard convergence sorting in gameDataV1.6.1.json.")
     
     newData = deepcopy(data)
     illegalSpecies = set()
