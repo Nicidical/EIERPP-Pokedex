@@ -51,7 +51,7 @@ if __name__ == "__main__":
                      "Kartana Fallen",
                      "Giratina",
                      "Groudon",
-                     "Ho-Oh"
+                     "Ho-Oh",
                      "Hoopa",
                      "Kecleong",
                      "Koraidon",
