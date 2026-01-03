@@ -42,6 +42,8 @@ if __name__ == "__main__":
                      "Cascoon Primal",
                      "Chien Pao Mega",
                      "Dawn Wings",
+                     "Deoxys",
+                     "Deoxys Attack",
                      "Dialga",
                      "Dusk Mane",
                      "Espeon Primal",
@@ -57,6 +59,7 @@ if __name__ == "__main__":
                      "Kyurem",
                      "Lugia",
                      "Lunala",
+                     "Magearna",
                      "Melmetal Mega",
                      "Mew",
                      "Mimikyu Apex",
@@ -68,6 +71,7 @@ if __name__ == "__main__":
                      "Regigigas",
                      "Reshiram",
                      "Smeargle",
+                     "Silvally",
                      "Solgaleo",
                      "Solrock System",
                      "Terapagos",
@@ -110,8 +114,9 @@ if __name__ == "__main__":
 
         validConverge = True
         for mon in bannedSpecies:
-            if mon in pokemon["name"]:
+            if mon in pokemon["name"] and pokemon["name"] != "Deoxys Speed" and pokemon["name"] != "Deoxys Defense":
                 validConverge = False
+                print(f"Invalid species: {pokemon['name']}")
 
         if validConverge:
             type1 = pokemon["stats"]["types"][0]
